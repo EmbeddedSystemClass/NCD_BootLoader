@@ -7,7 +7,8 @@ void clearStatusText(void);
 void showIapStatus(char * statusStr);
 
 void showIapProgess(unsigned char num);
+void hideIapProgess(void);
 
-void showIapVersion(unsigned short version);
+void showIapVersion(unsigned short firmwareVersion, unsigned short bootVersion);
 #endif
 

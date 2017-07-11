@@ -202,7 +202,6 @@ void writeApplicationToFlash(void)
 			delay_s(1);
 			NVIC_SystemReset();
 		}
-
 	}
 	//升级失败
 	else
@@ -222,20 +221,20 @@ void BootLoaderMainFunction(void)
 	{
 		memset(remoteSoftInfo, 0, sizeof(RemoteSoftInfo));
 
+		hideIapProgess();
 		//检查是否有新程序
 		if(My_Pass == checkNewAppFileIsExist())
 		{
-			delay_ms(50);
-			clearStatusText();		
-			delay_ms(500);
+			delay_ms(1000);
 			SelectPage(119);
-			
+			delay_ms(50);
+			clearStatusText();	
+			delay_ms(100);
 			showIapStatus("New Firmware Detected !      Check MD5\0");
 
-			delay_ms(100);
 			if((My_Pass == ReadRemoteSoftInfo(remoteSoftInfo)) && (My_Pass == checkMd5(remoteSoftInfo)))
 			{
-				showIapVersion(remoteSoftInfo->RemoteFirmwareVersion);
+				showIapVersion(remoteSoftInfo->RemoteFirmwareVersion, GB_SoftVersion);
 
 				showIapStatus("   --------  OK !   \0");
 				writeApplicationToFlash();
@@ -244,13 +243,17 @@ void BootLoaderMainFunction(void)
 			else
 			{
 				showIapStatus("   --------  Fail ! \0");
+				delay_ms(100);
+				deleteAppFileIfExist();
+				
+				showIapStatus("Restartting ...\0");
+				delay_ms(1000);
 			}
 		}
 	}
 	
 	MyFree(remoteSoftInfo);
 	
-	delay_ms(500);
 	jumpToUserApplicationProgram();
 }
 

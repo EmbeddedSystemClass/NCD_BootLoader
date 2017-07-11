@@ -37,13 +37,13 @@ static char buf[300];
 void clearStatusText(void)
 {
 	memset(buf, 0, 300);
-	DisText(0x2a00, buf, 240);
+	DisText(0x2a20, buf, 240);
 }
 
 void showIapStatus(char * statusStr)
 {
 	strcat(buf, statusStr);
-	DisText(0x2a00, buf, strlen(buf));
+	DisText(0x2a20, buf, strlen(buf));
 }
 
 
@@ -52,17 +52,25 @@ void showIapProgess(unsigned char num)
 	float value = num;
 	value *= 3.65;
 	
-	BasicPic(0x2a50, 1, 137, 230, 325, 230+value, 365, 390, 380);
+	BasicPic(0x2a00, 1, 137, 326, 291, 326+value, 305, 392, 399);
 }
 
-void showIapVersion(unsigned short version)
+void hideIapProgess(void)
+{
+	BasicPic(0x2a00, 0, 137, 326, 291, 326, 305, 392, 399);
+}
+
+void showIapVersion(unsigned short firmwareVersion, unsigned short bootVersion)
 {
 	char tempbuf[50];
-	
-	memset(tempbuf, 0, 50);
-	sprintf(tempbuf, "%d.%d.%02d", version/1000, version%1000/100, version%100);
 
-	DisText(0x2a60, tempbuf, strlen(tempbuf));
+	sprintf(tempbuf, "%d.%d.%02d\0", firmwareVersion/1000, firmwareVersion%1000/100, firmwareVersion%100);
+
+	DisText(0x2a10, tempbuf, strlen(tempbuf)+1);
+	
+	sprintf(tempbuf, "%d.%d.%02d\0", bootVersion/1000, bootVersion%1000/100, bootVersion%100);
+
+	DisText(0x2a18, tempbuf, strlen(tempbuf)+1);
 }
 
 
